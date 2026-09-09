@@ -1,0 +1,17 @@
+__pycache__/
+.venv/
+venv/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local editor and operating-system files
+.vscode/
+.DS_Store
+
+# Local training and generated artifacts
+datasets/
+models/*.pth
+projects/*/dataset/
+projects/*/models/*.pth
