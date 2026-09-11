@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ImageClassifier Local Trainer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.20.1/dist/ort.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <p class="eyebrow">HUGGING FACE SPACE / LOCAL COMPUTE</p>
+      <h1>Train on your machine.<br><span>Keep your data there.</span></h1>
+      <p class="lede">A browser-first image classifier. Your dataset never leaves this tab, and training uses WebGPU when your browser supports it.</p>
+      <div class="runtime" id="runtimeStatus">Checking browser runtime...</div>
+    </header>
+
+    <section class="workspace">
+      <aside class="panel setup-panel">
+        <div class="panel-heading"><span>01</span><h2>Build a dataset</h2></div>
+        <label class="dropzone" id="dropzone" for="datasetInput">
+          <strong>Choose a dataset folder</strong>
+          <span>Folder names become class labels</span>
+          <input id="datasetInput" type="file" webkitdirectory directory multiple accept="image/*">
+        </label>
+        <p class="hint">Example: <code>cats/</code> and <code>dogs/</code> folders with images inside.</p>
+        <div id="datasetSummary" class="summary empty">No images loaded yet.</div>
+
+        <div class="controls">
+          <label>Epochs <input id="epochs" type="number" min="1" max="100" value="10"></label>
+          <label>Batch size <input id="batchSize" type="number" min="1" max="128" value="16"></label>
+          <label>Learning rate <input id="learningRate" type="number" min="0.00001" max="1" step="0.0001" value="0.001"></label>
+        </div>
+        <button id="trainButton" class="button primary" disabled>Start local training</button>
+        <button id="stopButton" class="button quiet" disabled>Stop training</button>
+      </aside>
+
+      <section class="panel metrics-panel">
+        <div class="panel-heading"><span>02</span><h2>Watch it learn</h2></div>
+        <div class="metric-grid">
+          <div><small>STATUS</small><strong id="trainingStatus">Waiting for data</strong></div>
+          <div><small>EPOCH</small><strong id="epochMetric">0 / 0</strong></div>
+          <div><small>LOSS</small><strong id="lossMetric">--</strong></div>
+          <div><small>ACCURACY</small><strong id="accuracyMetric">--</strong></div>
+        </div>
+        <div class="chart-wrap"><canvas id="metricsChart" width="800" height="280"></canvas></div>
+        <div id="log" class="log" aria-live="polite">Runtime messages will appear here.</div>
+      </section>
+    </section>
+
+    <section class="lower-grid">
+      <section class="panel inference-panel">
+        <div class="panel-heading"><span>03</span><h2>Run inference</h2></div>
+        <label class="file-button button" for="imageInput">Choose an image</label>
+        <input id="imageInput" type="file" accept="image/*" hidden>
+        <div id="prediction" class="prediction empty">Train a model to classify an image.</div>
+        <button id="downloadButton" class="button quiet" disabled>Download browser model</button>
+      </section>
+
+      <section class="panel onnx-panel">
+        <div class="panel-heading"><span>04</span><h2>Use an ONNX model</h2></div>
+        <p class="small-copy">Optional inference path for a compatible exported model. ONNX models do not train in the browser.</p>
+        <label class="file-button button" for="onnxInput">Load .onnx model</label>
+        <input id="onnxInput" type="file" accept=".onnx" hidden>
+        <label class="file-button button" for="labelsInput">Load labels.json</label>
+        <input id="labelsInput" type="file" accept="application/json" hidden>
+        <div id="onnxStatus" class="summary empty">No ONNX model loaded.</div>
+      </section>
+    </section>
+
+    <footer>Local-first demo. No dataset upload endpoint is used by this Space.</footer>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

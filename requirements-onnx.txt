@@ -1,0 +1,4 @@
+# Optional local export dependency
+onnx>=1.16.0
+onnxscript>=0.1.0
+numpy<2

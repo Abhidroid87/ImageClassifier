@@ -1,0 +1,71 @@
+{
+  "name": "Testing_App",
+  "description": "",
+  "created_at": "2026-09-09T14:08:18.451357",
+  "num_classes": 1,
+  "classes": [
+    "dandelion"
+  ],
+  "trained": true,
+  "model_path": "projects/Testing_App/models/model.pth",
+  "training_history": [
+    {
+      "epoch": 1,
+      "loss": 0.0,
+      "accuracy": 100.0
+    },
+    {
+      "epoch": 2,
+      "loss": 0.0,
+      "accuracy": 100.0
+    },
+    {
+      "epoch": 3,
+      "loss": 0.0,
+      "accuracy": 100.0
+    },
+    {
+      "epoch": 4,
+      "loss": 0.0,
+      "accuracy": 100.0
+    },
+    {
+      "epoch": 5,
+      "loss": 0.0,
+      "accuracy": 100.0
+    },
+    {
+      "epoch": 6,
+      "loss": 0.0,
+      "accuracy": 100.0
+    },
+    {
+      "epoch": 7,
+      "loss": 0.0,
+      "accuracy": 100.0
+    },
+    {
+      "epoch": 8,
+      "loss": 0.0,
+      "accuracy": 100.0
+    },
+    {
+      "epoch": 9,
+      "loss": 0.0,
+      "accuracy": 100.0
+    },
+    {
+      "epoch": 10,
+      "loss": 0.0,
+      "accuracy": 100.0
+    }
+  ],
+  "class_counts": {
+    "dandelion": 2
+  },
+  "training_params": {
+    "epochs": 10,
+    "batch_size": 32,
+    "learning_rate": 0.001
+  }
+}
