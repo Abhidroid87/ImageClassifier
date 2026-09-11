@@ -81,8 +81,16 @@ function summarizeDataset() {
   state.files.forEach(({ label }) => { counts[label] = (counts[label] || 0) + 1; });
   $('datasetSummary').classList.remove('empty');
   $('datasetSummary').textContent = `${state.files.length} images / ${state.labels.length} classes\n${state.labels.map((label) => `${label}: ${counts[label]}`).join('  |  ')}`;
-  $('trainButton').disabled = state.files.length < 2 || state.labels.length < 2;
-  setStatus(state.labels.length >= 2 ? 'Ready to train' : 'Need two classes');
+  const enoughClasses = state.labels.length >= 2;
+  const everyClassHasImage = enoughClasses && state.labels.every((label) => counts[label] > 0);
+  $('trainButton').disabled = !enoughClasses || !everyClassHasImage;
+  $('classesRequirement').className = `requirement ${enoughClasses ? 'ready' : 'waiting'}`;
+  $('classesRequirement').querySelector('span').textContent = enoughClasses ? 'READY' : 'WAITING';
+  $('classesRequirement').querySelector('strong').textContent = enoughClasses ? `${state.labels.length} classes ready` : 'Add 2 or more classes';
+  $('imagesRequirement').className = `requirement ${everyClassHasImage ? 'ready' : 'waiting'}`;
+  $('imagesRequirement').querySelector('span').textContent = everyClassHasImage ? 'READY' : 'WAITING';
+  $('imagesRequirement').querySelector('strong').textContent = everyClassHasImage ? 'Each class has at least 1 image' : 'Add at least 1 image to each class';
+  setStatus(enoughClasses && everyClassHasImage ? 'Ready to train' : 'Add another class to continue');
 }
 
 $('datasetInput').addEventListener('input', (event) => {
@@ -236,6 +244,7 @@ async function predictWithOnnx(file) {
   let adapter = null;
   let backend = '';
   let imageDecode = false;
+  $('runtimeStatus').classList.add('loading');
   $('runtimeStatus').textContent = 'Checking browser runtime...';
   try {
     adapter = navigator.gpu ? await navigator.gpu.requestAdapter() : null;
@@ -261,6 +270,7 @@ async function predictWithOnnx(file) {
   ];
   const ready = checks[0] && checks[1] && checks[3] && checks[4];
   $('runtimeStatus').textContent = ready ? `Browser runtime: ${backend.toUpperCase()} / data stays local` : 'Browser runtime unavailable';
+  $('runtimeStatus').classList.remove('loading');
   $('runtimeDetails').textContent = [
     `WebGPU adapter: ${adapter ? 'available' : 'not available'}`,
     `WebGL: ${webgl ? 'available' : 'not available'}`,
@@ -268,6 +278,7 @@ async function predictWithOnnx(file) {
   ].join('  |  ');
   $('continueButton').disabled = !ready;
   if (ready) {
+    $('preflightTitle').textContent = 'Your browser is ready';
     $('continueButton').addEventListener('click', () => {
       $('appControls').disabled = false;
       $('preflight').hidden = true;

@@ -25,6 +25,8 @@ h1 span { color: var(--green); }
 .lede { max-width: 620px; margin: 24px 0 18px; color: var(--muted); font-size: 18px; line-height: 1.5; }
 .runtime { display: inline-flex; padding: 8px 12px; color: var(--green-dark); background: #d8eee3; border-radius: 4px; font: 500 12px "DM Mono", monospace; }
 .runtime-details { margin-top: 8px; color: var(--muted); font: 11px "DM Mono", monospace; }
+.runtime.loading::before { content: ""; width: 10px; height: 10px; margin-right: 8px; border: 2px solid currentColor; border-top-color: transparent; border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
 .workspace, .lower-grid { display: grid; grid-template-columns: minmax(280px, .82fr) minmax(0, 1.5fr); gap: 18px; }
 .lower-grid { margin-top: 18px; grid-template-columns: 1fr 1fr; }
 .app-controls { border: 0; padding: 0; margin: 0; min-width: 0; }
@@ -52,6 +54,12 @@ h2 { margin: 0; font-size: 20px; }
 code, .log, .summary { font-family: "DM Mono", monospace; }
 .summary { padding: 13px; color: var(--green-dark); background: #eef6ef; font-size: 12px; line-height: 1.6; }
 .summary.empty, .prediction.empty { color: var(--muted); background: #f7f6f1; }
+.requirements { display: grid; gap: 6px; margin-top: 12px; }
+.requirement { display: flex; justify-content: space-between; gap: 12px; padding: 8px 10px; color: var(--muted); background: #f7f6f1; font-size: 12px; }
+.requirement span { font: 10px "DM Mono", monospace; }
+.requirement.ready { color: var(--green-dark); background: #eef6ef; }
+.requirement.ready span::before { content: "✓ "; }
+.requirement.waiting span::before { content: "○ "; }
 .controls { display: grid; gap: 10px; margin: 20px 0; }
 .controls label { display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: 13px; }
 input[type="number"] { width: 100px; padding: 8px; color: var(--ink); background: white; border: 1px solid var(--line); font: 13px "DM Mono", monospace; }
