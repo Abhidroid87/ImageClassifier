@@ -19,10 +19,10 @@ function setStatus(message) {
   $('trainingStatus').textContent = message;
 }
 
-function addCheck(name, passed, detail) {
+function addCheck(name, passed, detail, required = true) {
   const row = document.createElement('div');
-  row.className = `check ${passed ? 'ok' : 'fail'}`;
-  row.innerHTML = `<span>${passed ? 'PASS' : 'STOP'}  ${name}</span><span>${detail}</span>`;
+  row.className = `check ${passed || !required ? 'ok' : 'fail'}`;
+  row.innerHTML = `<span>${passed ? 'PASS' : required ? 'STOP' : 'INFO'}  ${name}</span><span>${detail}</span>`;
   $('preflightChecks').appendChild(row);
   return passed;
 }
@@ -247,13 +247,15 @@ async function predictWithOnnx(file) {
     try { await tf.setBackend('webgl'); await tf.ready(); backend = tf.getBackend(); } catch (fallbackError) { backend = ''; }
   }
   try {
-    const probe = new Blob([new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10])], { type: 'image/png' });
-    imageDecode = typeof createImageBitmap === 'function' && Boolean(await createImageBitmap(probe));
+    const probeCanvas = document.createElement('canvas');
+    probeCanvas.width = 2; probeCanvas.height = 2;
+    const probeBlob = await new Promise((resolve) => probeCanvas.toBlob(resolve, 'image/png'));
+    imageDecode = typeof createImageBitmap === 'function' && Boolean(await createImageBitmap(probeBlob));
   } catch (error) { imageDecode = false; }
   const checks = [
     addCheck('Image decoding', imageDecode, imageDecode ? 'ready' : 'unavailable'),
     addCheck('Training backend', Boolean(backend), backend ? backend.toUpperCase() : 'unavailable'),
-    addCheck('WebGPU adapter', Boolean(adapter), adapter ? 'ready' : 'fallback'),
+    addCheck('WebGPU adapter', Boolean(adapter), adapter ? 'ready' : 'optional fallback', false),
     addCheck('WebGL fallback', Boolean(webgl), webgl ? 'ready' : 'unavailable'),
     addCheck('ONNX runtime', typeof ort !== 'undefined', typeof ort !== 'undefined' ? 'ready' : 'unavailable')
   ];
