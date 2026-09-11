@@ -21,6 +21,14 @@
       <div class="runtime-details" id="runtimeDetails">Checking WebGPU, WebGL, and browser storage...</div>
     </header>
 
+    <section class="preflight" id="preflight" aria-live="polite">
+      <div class="panel-heading"><span>READY CHECK</span><h2>Checking this browser</h2></div>
+      <p class="small-copy">The trainer will unlock after the browser can decode images and initialize a compute backend.</p>
+      <div class="checks" id="preflightChecks"></div>
+      <button class="button primary" id="continueButton" disabled>Continue to trainer</button>
+    </section>
+
+    <fieldset class="app-controls" id="appControls" disabled>
     <section class="workspace">
       <aside class="panel setup-panel">
         <div class="panel-heading"><span>01</span><h2>Build a dataset</h2></div>
@@ -81,6 +89,7 @@
         <div id="onnxStatus" class="summary empty">No ONNX model loaded.</div>
       </section>
     </section>
+    </fieldset>
 
     <footer>Local-first demo. No dataset upload endpoint is used by this Space.</footer>
   </main>
