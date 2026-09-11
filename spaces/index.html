@@ -18,6 +18,7 @@
       <h1>Train on your machine.<br><span>Keep your data there.</span></h1>
       <p class="lede">A browser-first image classifier. Your dataset never leaves this tab, and training uses WebGPU when your browser supports it.</p>
       <div class="runtime" id="runtimeStatus">Checking browser runtime...</div>
+      <div class="runtime-details" id="runtimeDetails">Checking WebGPU, WebGL, and browser storage...</div>
     </header>
 
     <section class="workspace">
@@ -28,7 +29,15 @@
           <span>Folder names become class labels</span>
           <input id="datasetInput" type="file" webkitdirectory directory multiple accept="image/*">
         </label>
-        <p class="hint">Example: <code>cats/</code> and <code>dogs/</code> folders with images inside.</p>
+        <p class="hint">Use a folder such as <code>cats/</code> and <code>dogs/</code>. ZIP files are not supported in the browser upload.</p>
+        <div class="manual-upload">
+          <label for="className">Or add images to one class</label>
+          <div class="manual-row">
+            <input id="className" type="text" placeholder="Class name, e.g. cats">
+            <label class="button file-button" for="imageDatasetInput">Choose images</label>
+            <input id="imageDatasetInput" type="file" multiple accept="image/*" hidden>
+          </div>
+        </div>
         <div id="datasetSummary" class="summary empty">No images loaded yet.</div>
 
         <div class="controls">

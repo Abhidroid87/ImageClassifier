@@ -53,6 +53,21 @@ function drawChart() {
   drawLine(state.history.accuracy, '#0c7761');
 }
 
+function addDatasetFiles(files, fallbackLabel = '') {
+  const additions = [...files]
+    .filter((file) => imageExtensions.test(file.name))
+    .map((file) => {
+      const parts = (file.webkitRelativePath || file.name).split('/');
+      const label = parts.length > 1 ? parts[parts.length - 2] : fallbackLabel.trim();
+      return label ? { file, label } : null;
+    })
+    .filter(Boolean);
+  state.files = [...state.files, ...additions];
+  state.labels = [...new Set(state.files.map(({ label }) => label))].sort();
+  summarizeDataset();
+  log(`${additions.length} image${additions.length === 1 ? '' : 's'} added locally. Nothing was uploaded.`);
+}
+
 function summarizeDataset() {
   const counts = {};
   state.files.forEach(({ label }) => { counts[label] = (counts[label] || 0) + 1; });
@@ -63,15 +78,19 @@ function summarizeDataset() {
 }
 
 $('datasetInput').addEventListener('change', (event) => {
-  state.files = [...event.target.files]
-    .filter((file) => imageExtensions.test(file.name))
-    .map((file) => {
-      const parts = (file.webkitRelativePath || file.name).split('/');
-      return { file, label: parts.length > 1 ? parts[parts.length - 2] : 'default' };
-    });
-  state.labels = [...new Set(state.files.map(({ label }) => label))].sort();
-  summarizeDataset();
-  log('Dataset loaded locally. Nothing was uploaded.');
+  state.files = [];
+  addDatasetFiles(event.target.files);
+});
+
+$('imageDatasetInput').addEventListener('change', (event) => {
+  const className = $('className').value.trim();
+  if (!className) {
+    log('Enter a class name before choosing individual images.');
+    event.target.value = '';
+    return;
+  }
+  addDatasetFiles(event.target.files, className);
+  event.target.value = '';
 });
 
 async function imageTensor(file) {
@@ -205,7 +224,10 @@ async function predictWithOnnx(file) {
 }
 
 (async () => {
+  const webgl = document.createElement('canvas').getContext('webgl2') || document.createElement('canvas').getContext('webgl');
+  let adapter = null;
   try {
+    adapter = navigator.gpu ? await navigator.gpu.requestAdapter() : null;
     if (navigator.gpu) await tf.setBackend('webgpu');
     await tf.ready();
     $('runtimeStatus').textContent = `Browser runtime: ${tf.getBackend().toUpperCase()} / data stays local`;
@@ -213,6 +235,11 @@ async function predictWithOnnx(file) {
     await tf.setBackend('webgl'); await tf.ready();
     $('runtimeStatus').textContent = `Browser runtime: ${tf.getBackend().toUpperCase()} fallback / data stays local`;
   }
+  $('runtimeDetails').textContent = [
+    `WebGPU adapter: ${adapter ? 'available' : 'not available'}`,
+    `WebGL: ${webgl ? 'available' : 'not available'}`,
+    `ONNX WebAssembly: available for inference`
+  ].join('  |  ');
   drawChart();
 })();
 
