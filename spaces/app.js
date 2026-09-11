@@ -77,12 +77,12 @@ function summarizeDataset() {
   setStatus(state.labels.length >= 2 ? 'Ready to train' : 'Need two classes');
 }
 
-$('datasetInput').addEventListener('change', (event) => {
+$('datasetInput').addEventListener('input', (event) => {
   state.files = [];
   addDatasetFiles(event.target.files);
 });
 
-$('imageDatasetInput').addEventListener('change', (event) => {
+$('imageDatasetInput').addEventListener('input', (event) => {
   const className = $('className').value.trim();
   if (!className) {
     log('Enter a class name before choosing individual images.');
